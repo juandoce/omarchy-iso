@@ -311,10 +311,8 @@ gib=$((mib * 1024))
 disk_size_in_mib=$((disk_size / mib * mib)) # Rounds to nearest MiB
 
 gpt_backup_reserve=$((mib))
-boot_partition_start=$((mib))
-boot_partition_size=$((2 * gib))
 
-main_partition_start=$((boot_partition_size + boot_partition_start))
+main_partition_start=$((mib))
 main_partition_size=$((disk_size_in_mib - main_partition_start - gpt_backup_reserve))
 
 # Detect T2 Mac and set appropriate kernel
@@ -330,7 +328,7 @@ cat <<-_EOF_ >user_configuration.json
     "archinstall-language": "English",
     "auth_config": {},
     "audio_config": { "audio": "pipewire" },
-    "bootloader": "Limine",
+    "bootloader": "Grub",
     "custom_commands": [],
     "disk_config": {
         "btrfs_options": { 
@@ -343,27 +341,6 @@ cat <<-_EOF_ >user_configuration.json
             {
                 "device": "$disk",
                 "partitions": [
-                    {
-                        "btrfs": [],
-                        "dev_path": null,
-                        "flags": [ "boot", "esp" ],
-                        "fs_type": "fat32",
-                        "mount_options": [],
-                        "mountpoint": "/boot",
-                        "obj_id": "ea21d3f2-82bb-49cc-ab5d-6f81ae94e18d",
-                        "size": {
-                            "sector_size": { "unit": "B", "value": 512 },
-                            "unit": "B",
-                            "value": $boot_partition_size
-                        },
-                        "start": {
-                            "sector_size": { "unit": "B", "value": 512 },
-                            "unit": "B",
-                            "value": $boot_partition_start
-                        },
-                        "status": "create",
-                        "type": "primary"
-                    },
                     {
                         "btrfs": [
                             { "mountpoint": "/", "name": "@" },
